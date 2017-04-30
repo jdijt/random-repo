@@ -1,28 +1,40 @@
-@(queryForm: Form[QueryData], results: List[(Country, List[(Airport, List[Runway])])])(implicit messages: Messages)
+@(queryForm: Form[QueryData], countries: List[Country])(implicit messages: Messages)
 
-@main("Lunatech airport assignment -- Query Result"){
+@countryDisplay(country: Country) = {
+    <a href="@country.countryData.wikipedia_link">@country.countryData.name</a>
+    <ul>
+    @for(airport <- country.airports) {
+        <li>@airportDisplay(airport)</li>
+    }
+    </ul>
+}
+
+@airportDisplay(airport: Airport) = {
+    @airport.airportData.name -- @airport.airportData.aType
+    @if(airport.airportData.wikipedia_link.isDefined){-- <a href="@airport.airportData.wikipedia_link.get">Wiki</a>}
+    @if(airport.airportData.home_link.isDefined){-- <a href="@airport.airportData.home_link.get">Homepage</a>}
+    <ul>
+    @for(runway <- airport.runways) {
+        <li>@runwayDisplay(runway)</li>
+    }
+    </ul>
+}
+
+@runwayDisplay(runway: Runway) = {
+    @runway.surface -- @if(runway.closed == 1){Closed} else {Open}
+}
+
+@main("Lunatech airport assignment -- Query Result") {
     @queryInput(queryForm)
 
     <h1>Query Results:</h1>
-    @if(results.isEmpty) {
+    @if(countries.isEmpty) {
         <p>No matches found</p>
     } else {
-        <p>@results.size matches found:</p>
+        <p>@countries.size matches found:</p>
         <ul>
-        @for(result <- results){
-            <li>@result._1.toString
-                <ul>
-                    @for(airport <- result._2){
-                        <li>@airport._1.toString</li>
-                        <ul>
-                            @for(runway <- airport._2){
-                                <li>@runway.toString</li>
-                            }
-                        </ul>
-                    }
-                </ul>
-            </li>
-
+        @for(result <- countries) {
+            @countryDisplay(result)
         }
         </ul>
     }

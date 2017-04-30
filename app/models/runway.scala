@@ -59,9 +59,11 @@ class CsvBackedRunwayRepository @Inject()(environment: Environment) extends Runw
       }
     }
 
+  private val runwaysByAirport: Map[Int, Seq[Runway]] = runways.groupBy(_.airport_ref)
+
   override def all(): Future[Seq[Runway]] = Future(runways)
 
-  override def runwaysByAirport(airportRef: Int): Future[List[Runway]] = Future {
-    runways.filter(_.airport_ref == airportRef)
+  override def runwaysByAirport(airportRef: Int): Future[Seq[Runway]] = Future {
+    runwaysByAirport.getOrElse(airportRef, Nil)
   }
 }
