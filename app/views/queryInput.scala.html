@@ -1,0 +1,10 @@
+@(queryForm: Form[QueryData])(implicit messages: Messages)
+
+<h1>Search for airport data</h1>
+
+@import helper._
+@form(action = routes.Application.queryPost()){
+    @inputText(queryForm("query"), '_label -> "Country name or code")
+    <button>Search</button>
+}
+

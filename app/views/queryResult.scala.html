@@ -1,0 +1,17 @@
+@(queryForm: Form[QueryData], results: List[String])(implicit messages: Messages)
+
+@main("Lunatech airport assignment -- Query Result"){
+    @queryInput(queryForm)
+
+    <h1>Query Results:</h1>
+    @if(results.isEmpty) {
+        <p>No matches found</p>
+    } else {
+        <p>@results.size matches found:</p>
+        <ul>
+        @for(result <- results){
+            <li>@result</li>
+        }
+        </ul>
+    }
+}

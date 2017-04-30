@@ -1,7 +1,9 @@
-@(message: String)
+@(queryForm: Form[QueryData])(implicit messages: Messages)
 
-@main("Welcome to Play") {
+@main("Index") {
+    @queryInput(queryForm)
 
-    @play20.welcome(message)
+    <h1>Airport dashboard</h1>
+    <a href="@routes.Application.dashboard()">View airport dashboard.</a>
 
 }
