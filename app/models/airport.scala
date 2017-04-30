@@ -18,15 +18,15 @@ case class Airport(id: Int
                    , longitude: Float
                    , elevation: Option[Int]
                    , continent: String
-                   , isoCountry: String
-                   , isoRegion: String
+                   , iso_country: String
+                   , iso_region: String
                    , municipality: Option[String]
-                   , scheduledService: Option[String]
-                   , gpsCode: Option[String]
-                   , iataCode: Option[String]
-                   , localCode: Option[String]
-                   , home: Option[String]
-                   , wikipedia: Option[String]
+                   , scheduled_service: Option[String]
+                   , gps_code: Option[String]
+                   , iata_code: Option[String]
+                   , local_code: Option[String]
+                   , home_link: Option[String]
+                   , wikipedia_link: Option[String]
                    , keywords: Option[String]
                   )
 
@@ -64,16 +64,16 @@ class CsvBackedAirportRepository @Inject()(environment: Environment) extends Air
       case Some(is) => {
         val csv = Source.fromInputStream(is).mkString
         Parser.parse[Airport](csv) match {
-          case Right(airports) => airports.toList
+          case Right(aps) => aps.toList
           case Left(failure) => {
-            val message = s"Error parsing CSV: ${failure.message}"
+            val message = s"Error parsing airports CSV: ${failure.message}"
             Logger.error(message)
             throw new ModelError(message)
           }
         }
       }
       case None => {
-        val message = s"Error finding countries CSV."
+        val message = s"Unable to open airports CSV."
         Logger.error(message)
         throw new ModelError(message)
       }
@@ -82,6 +82,6 @@ class CsvBackedAirportRepository @Inject()(environment: Environment) extends Air
 
   override def all(): Future[Seq[Airport]] = Future(airports)
   override def airportsByCountryIso(countryIso: String): Future[Seq[Airport]] = Future{
-    airports.filter(_.isoCountry == countryIso)
+    airports.filter(_.iso_country == countryIso)
   }
 }

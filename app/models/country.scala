@@ -23,9 +23,9 @@ class CsvBackedCountryRepository @Inject()(environment: Environment) extends Cou
       case Some(is) => {
         val csv = Source.fromInputStream(is).mkString
         Parser.parse[Country](csv) match {
-          case Right(countries) => countries.toList
+          case Right(cs) => cs.toList
           case Left(failure) => {
-            val message = s"Error parsing CSV: ${failure.message}"
+            val message = s"Error parsing countries CSV: ${failure.message}"
             Logger.error(message)
             throw new ModelError(message)
           }

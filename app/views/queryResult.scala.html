@@ -1,4 +1,4 @@
-@(queryForm: Form[QueryData], results: List[(Country, List[Airport])])(implicit messages: Messages)
+@(queryForm: Form[QueryData], results: List[(Country, List[(Airport, List[Runway])])])(implicit messages: Messages)
 
 @main("Lunatech airport assignment -- Query Result"){
     @queryInput(queryForm)
@@ -13,7 +13,12 @@
             <li>@result._1.toString
                 <ul>
                     @for(airport <- result._2){
-                        <li>@airport.toString</li>
+                        <li>@airport._1.toString</li>
+                        <ul>
+                            @for(runway <- airport._2){
+                                <li>@runway.toString</li>
+                            }
+                        </ul>
                     }
                 </ul>
             </li>
