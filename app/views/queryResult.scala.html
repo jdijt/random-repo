@@ -1,4 +1,4 @@
-@(queryForm: Form[QueryData], results: List[String])(implicit messages: Messages)
+@(queryForm: Form[QueryData], results: List[Country])(implicit messages: Messages)
 
 @main("Lunatech airport assignment -- Query Result"){
     @queryInput(queryForm)
@@ -10,7 +10,7 @@
         <p>@results.size matches found:</p>
         <ul>
         @for(result <- results){
-            <li>@result</li>
+            <li>@result.toString</li>
         }
         </ul>
     }
