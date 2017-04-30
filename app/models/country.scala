@@ -12,12 +12,12 @@ import scala.io.Source
 case class Country(id: Int, code: String, name: String, continent: String, wikipedia_link: String, keywords: String)
 
 trait CountryRepository {
-  def allCountries: Future[Iterator[Country]]
+  def all: Future[Seq[Country]]
 
-  def search(nameOrCode: String): Future[Iterator[Country]]
+  def search(nameOrCode: String): Future[Seq[Country]]
 }
 
-class CsvBackedCountryRepository @Inject()(environment: Environment, configuration: Configuration) extends CountryRepository {
+class CsvBackedCountryRepository @Inject()(environment: Environment) extends CountryRepository {
   private val countries: List[Country] =
     environment.resourceAsStream("countries.csv") match {
       case Some(is) => {
@@ -38,13 +38,13 @@ class CsvBackedCountryRepository @Inject()(environment: Environment, configurati
       }
     }
 
-  override def allCountries: Future[Iterator[Country]] = Future(countries.iterator)
+  override def all: Future[Seq[Country]] = Future(countries)
 
-  override def search(nameOrCode: String): Future[Iterator[Country]] = Future {
+  override def search(nameOrCode: String): Future[Seq[Country]] = Future {
     val lowerNameOrCode = nameOrCode.toLowerCase
     countries.filter {
-      c => c.name.toLowerCase.contains(lowerNameOrCode) || c.code.toLowerCase.contains(lowerNameOrCode)
-    }.iterator
+      c => c.name.toLowerCase.contains(lowerNameOrCode) || c.code == nameOrCode
+    }
   }
 
 
