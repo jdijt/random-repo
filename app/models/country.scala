@@ -17,6 +17,9 @@ trait CountryRepository {
   def all: Future[Seq[Country]]
 
   def search(nameOrCode: String): Future[Seq[Country]]
+
+  def airportCounts: Future[Seq[(Country, Int)]]
+  def runwayTypes: Future[Seq[(Country, Seq[String])]]
 }
 
 

@@ -36,6 +36,8 @@ trait RunwayRepository {
   def all(): Future[Seq[Runway]]
 
   def runwaysByAirport(airportRef: Int): Future[Seq[Runway]]
+
+  def runwayLeIdentSummary(): Future[Seq[(String, Int)]]
 }
 
 

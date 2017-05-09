@@ -1,20 +1,20 @@
-@(top10Countries: Seq[(String, Int)], low10Countries: Seq[(String, Int)], rwsPerCountry: Seq[(String, Seq[String])], rwsIdent: Seq[(String, Int)])
+@(top10Countries: Seq[(Country, Int)], low10Countries: Seq[(Country, Int)], rwsPerCountry: Seq[(Country, Seq[String])], rwsIdent: Seq[(String, Int)])
 
 <h1>Airport stats dashboard</h1>
 <h2>Airport counts per country</h2>
 <h3>Countries with the most airports</h3>
 @for(result <- top10Countries){
-    <p>@result._1 -- @result._2</p>
+    <p>@result._1.countryData.name -- @result._2</p>
 }
 
 <h3>Countries with the fewest airports</h3>
 @for(result <- low10Countries){
-    <p>@result._1 -- @result._2</p>
+    <p>@result._1.countryData.name -- @result._2</p>
 }
 
 <h2>Runway types per country</h2>
 @for(result <- rwsPerCountry){
-    <p>@result._1 -- @result._2.mkString(", ")</p>
+    <p>@result._1.countryData.name -- @result._2.mkString(", ")</p>
 }
 
 <h2>Top ten most common runway identifications</h2>

@@ -19,28 +19,28 @@ class Application @Inject()(val messagesApi: MessagesApi, countries: CountryRepo
     mapping("query" -> text)(QueryData.apply)(QueryData.unapply)
   )
 
-  def index = Action { implicit request =>
+  def index: Action[AnyContent] = Action {
     Ok(views.html.index(queryForm))
   }
 
-  def queryPost = Action(parse.form(queryForm)) { implicit request =>
+  def queryPost: Action[QueryData] = Action(parse.form(queryForm)) { implicit request =>
     Redirect(routes.Application.queryGet(request.body.query))
   }
 
-  def queryGet(query: String) = Action.async {
+  def queryGet(query: String): Action[AnyContent] = Action.async {
     def filledForm = queryForm.fill(QueryData(query))
 
-    countries.search(query.trim).map(cs => Ok(views.html.queryResult(filledForm, cs.toList)))
+    countries.search(query.trim).map {
+      cs => Ok(views.html.queryResult(filledForm, cs.toList))
+    }
   }
 
-  def dashboard = Action.async {
+  def dashboard: Action[AnyContent] = Action.async {
     val results = for {
-      countries <- countries.all
-      airportCounts = countries.map(c => (c.countryData.name, c.airports.size)).sortBy{case (_, count) => count}
-      runwayTypes = countries.map(c => (c.countryData.name, c.airports.flatMap(_.runways.map(_.surface)).distinct.sorted))
-      runways <- runways.all
-      runwayIdent = runways.groupBy(_.le_ident).map{case (id, rws) => (id, rws.size)}.toSeq.sortBy{case (_, count) => count}
-    } yield(airportCounts, runwayTypes, runwayIdent)
+      airportCounts <- countries.airportCounts
+      runwayTypes <- countries.runwayTypes
+      runwayIdent <- runways.runwayLeIdentSummary()
+    } yield (airportCounts, runwayTypes, runwayIdent)
 
     results.map {
       case (apCounts, rwsType, rwsIdent) => Ok(views.html.dashboard(apCounts.takeRight(10).reverse, apCounts.take(10), rwsType, rwsIdent.takeRight(10).reverse))

@@ -28,4 +28,12 @@ class CsvBackedRunwayRepository @Inject()(csvFileFactory: CsvFileFactory) extend
   override def runwaysByAirport(airportRef: Int): Future[Seq[Runway]] = Future {
     runwaysByAirport.getOrElse(airportRef, Nil)
   }
+
+  override def runwayLeIdentSummary(): Future[Seq[(String, Int)]] = Future {
+    runways.groupBy(_.le_ident).map {
+      case (id, rws) => (id, rws.size)
+    }.toSeq.sortBy {
+      case (_, count) => count
+    }
+  }
 }
