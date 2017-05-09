@@ -1,5 +1,8 @@
-import com.google.inject.AbstractModule
+import com.google.inject.assistedinject.FactoryProvider
+import com.google.inject.{AbstractModule, Provider}
 import models._
+import models.csvbacked._
+
 
 class Module extends AbstractModule {
   def configure() = {
@@ -8,6 +11,8 @@ class Module extends AbstractModule {
     bind(classOf[CountryRepository]).to(classOf[CsvBackedCountryRepository]).asEagerSingleton()
     bind(classOf[AirportRepository]).to(classOf[CsvBackedAirportRepository]).asEagerSingleton()
     bind(classOf[RunwayRepository]).to(classOf[CsvBackedRunwayRepository]).asEagerSingleton()
+
+    bind(classOf[CsvFileFactory]).to(classOf[CsvFileFactoryImpl])
   }
 
 }

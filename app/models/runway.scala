@@ -38,32 +38,4 @@ trait RunwayRepository {
   def runwaysByAirport(airportRef: Int): Future[Seq[Runway]]
 }
 
-class CsvBackedRunwayRepository @Inject()(environment: Environment) extends RunwayRepository {
-  private val runways: List[Runway] =
-    environment.resourceAsStream("runways.csv") match {
-      case Some(is) => {
-        val csv = Source.fromInputStream(is).mkString
-        Parser.parse[Runway](csv) match {
-          case Right(rws) => rws.toList
-          case Left(failure) => {
-            val message = s"Error parsing runways CSV: ${failure.message}"
-            Logger.error(message)
-            throw new ModelError(message)
-          }
-        }
-      }
-      case None => {
-        val message = s"Unable to open runways CSV."
-        Logger.error(message)
-        throw new ModelError(message)
-      }
-    }
 
-  private val runwaysByAirport: Map[Int, Seq[Runway]] = runways.groupBy(_.airport_ref)
-
-  override def all(): Future[Seq[Runway]] = Future(runways)
-
-  override def runwaysByAirport(airportRef: Int): Future[Seq[Runway]] = Future {
-    runwaysByAirport.getOrElse(airportRef, Nil)
-  }
-}
