@@ -1,13 +1,6 @@
 package models
 
-import javax.inject.Inject
-
-import play.api.{Environment, Logger}
-import zamblauskas.csv.parser._
-
-import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
-import scala.io.Source
 
 
 case class Runway(id: Int

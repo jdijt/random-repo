@@ -34,14 +34,14 @@ class CsvBackedAirportRepository @Inject()(csvFileFactory: CsvFileFactory, runwa
     ) (AirportRow)
 
   private val airports: List[AirportRow] =
-  Parser.parse[AirportRow](csvFileFactory.getFile("airports.csv").contents) match {
-    case Right(airports) => airports.toList
-    case Left(_) => {
-      val message = s"Error parsing CSV data from resource airports.csv"
-      Logger.error(message)
-      throw new ModelError(message)
+    Parser.parse[AirportRow](csvFileFactory.getFile("airports.csv").contents) match {
+      case Right(as) => as.toList
+      case Left(_) => {
+        val message = s"Error parsing CSV data from resource airports.csv"
+        Logger.error(message)
+        throw new ModelError(message)
+      }
     }
-  }
 
   private val airportRowsByCountryIso: Map[String, Seq[AirportRow]] = airports.groupBy(_.iso_country)
 

@@ -12,7 +12,7 @@ import scala.concurrent.Future
 class CsvBackedCountryRepository @Inject()(airports: AirportRepository, csvFileFactory: CsvFileFactory) extends CountryRepository {
   private val countries: List[CountryRow] =
     Parser.parse[CountryRow](csvFileFactory.getFile("countries.csv").contents) match {
-      case Right(countries) => countries.toList
+      case Right(cs) => cs.toList
       case Left(_) => {
         val message = s"Error parsing CSV data from resource countries.csv"
         Logger.error(message)
