@@ -28,7 +28,7 @@ class CsvBackedCountryRepository @Inject()(airports: AirportRepository, csvFileF
 
   override def airportCounts: Future[Seq[(Country, Int)]] = for {
     countries <- this.all
-  } yield countries.map(c => (c, c.airports.size))
+  } yield countries.map(c => (c, c.airports.size)).sortBy(_._2)
 
   override def all: Future[Seq[Country]] = Future.sequence {
     countries.map(c => for (aps <- airports.airportsByCountryIso(c.code)) yield Country(c, aps))
