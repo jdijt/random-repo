@@ -36,15 +36,20 @@ class Application @Inject()(val messagesApi: MessagesApi, countries: CountryRepo
   }
 
   def dashboard: Action[AnyContent] = Action.async {
-    val results = for {
-      airportCounts <- countries.airportCounts
-      runwayTypes <- countries.runwayTypes
-      runwayIdent <- runways.runwayLeIdentSummary()
-    } yield (airportCounts, runwayTypes, runwayIdent)
+    val airportCounts = countries.airportCounts
+    val runwayTypes = countries.runwayTypes
+    val runwayIdent = runways.runwayLeIdentSummary
 
-    results.map {
-      case (apCounts, rwsType, rwsIdent) => Ok(views.html.dashboard(apCounts.takeRight(10).reverse, apCounts.take(10), rwsType, rwsIdent.takeRight(10).reverse))
-    }
+    for {
+      acs <- airportCounts
+      rts <- runwayTypes
+      rid <- runwayIdent
+    } yield Ok(views.html.dashboard(
+      acs.takeRight(10).reverse,
+      acs.take(10),
+      rts,
+      rid.takeRight(10).reverse
+    ))
   }
 
 }
